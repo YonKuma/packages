@@ -1,2 +1,3 @@
 # drastic
-351ELEC installs scripts for Drastic
+
+Simple Drastic install and uninstall script for 351ELEC
