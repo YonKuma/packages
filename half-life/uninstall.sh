@@ -7,3 +7,8 @@ PORTNAME="half-life"
 
 rm -rf "${INSTALLPATH}/${PORTNAME}"
 rm -f "${INSTALLPATH}/Half Life.sh"
+
+for image in system-half-life.png  system-half-life-thumb.png
+do
+  rm "${INSTALLPATH}/images/${image}"
+done
