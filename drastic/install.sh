@@ -29,7 +29,7 @@ START_SCRIPT="$BINARY.sh"
 mkdir -p "${INSTALL_PATH}/${MYARCH}/"
 
 wget -O $LINKDEST $LINK
-CHECKSUM=$(sha256sum $LINKDEST | awk '{print $1}'
+CHECKSUM=$(sha256sum $LINKDEST | awk '{print $1}')
 if [ ! "${SHASUM}" == "${CHECKSUM}" ]
 then
   rm "${LINKDEST}"
