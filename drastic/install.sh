@@ -84,5 +84,5 @@ then
   rm -f /storage/.config/emulationstation/scripts/drastic.sh
 fi
 mkdir ${INSTALL_PATH}/${MYARCH}/drastic/config
-cp /usr/config/emulationstation/scripts/drastic/config/drastic.cfg ${INSTALL_PATH}/${MYARCH}/drastic/config 2>/dev/null ||:
+cp drastic/drastic.cfg ${INSTALL_PATH}/${MYARCH}/drastic/config 2>/dev/null ||:
 ln -sf ${INSTALL_PATH}/${START_SCRIPT} /storage/.config/emuelec/scripts/drastic.sh
