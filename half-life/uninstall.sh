@@ -3,9 +3,9 @@
 # Copyright (C) 2020-present Fewtarius
 
 INSTALLPATH="/storage/roms/ports"
-PORTNAME="half-life"
+PKG_NAME="half-life"
 
-rm -rf "${INSTALLPATH}/${PORTNAME}"
+rm -rf "${INSTALLPATH}/${PKG_NAME}"
 rm -f "${INSTALLPATH}/Half Life.sh"
 
 for image in system-half-life.png  system-half-life-thumb.png

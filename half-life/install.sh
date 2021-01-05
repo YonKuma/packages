@@ -3,45 +3,47 @@
 # Copyright (C) 2020-present Fewtarius
 
 INSTALLPATH="/storage/roms/ports"
-PORTNAME="half-life"
+PKG_NAME="half-life"
+PKG_FILE="Half-Life.zip"
+PKG_VERSION="1.0.0"
+PKG_SHASUM="9cfa63125469ef7bb3b85722ff6992df06fef61be7a5c8ead16a58eb61ac569a"
 SOURCEPATH=$(pwd)
 
 ### Test and make the full path if necessary.
-if [ ! -d "${INSTALLPATH}/${PORTNAME}" ]
+if [ ! -d "${INSTALLPATH}/${PKG_NAME}" ]
 then
-  mkdir -p "${INSTALLPATH}/${PORTNAME}"
+  mkdir -p "${INSTALLPATH}/${PKG_NAME}"
 fi
 
-cd ${INSTALLPATH}/${PORTNAME}
+cd ${INSTALLPATH}/${PKG_NAME}
 
-for bin in client_arm64.so controls.png hl_arm64.so libxash.so libxashmenu64.so xash3d "Copy%20Contents%20into%20valve%20folder.zip"
-do
-  curl -Lo ${bin} "https://github.com/krishenriksen/Half-Life-rg351p/raw/main/Half-Life/${bin}"
+curl -Lo ${PKG_FILE} https://github.com/krishenriksen/Half-Life-rg351p/releases/download/${PKG_VERSION}/${PKG_FILE}
+BINSUM=$(sha256sum ${bin} | awk '{print $1}')
+if [ ! "${PKG_SHASUM}" == "${BINSUM}" ]
+then
+  echo "Checksum mismatch, please update the package."
+  exit 1
+fi
 
-  ### Verify the binary checksum matches the checksums in the package or abort.
-  SHASUM=$(awk '/'${bin}'/ {print $1}' ${SOURCEPATH}/${PORTNAME}/${PORTNAME}.sha256sums)
-  BINSUM=$(sha256sum ${bin} | awk '{print $1}')
-echo "${SHASUM} ${BINSUM}"
-  if [ ! "${SHASUM}" == "${BINSUM}" ]
-  then
-    echo "Checksum mismatch at ${bin}"
-    exit 1
-  fi
-done
+unzip -o ${PKG_NAME}
+rm -f Half-Life.sh
+mv Half-Life/* .
+rmdir Half-Life
 
-unzip -o "Copy%20Contents%20into%20valve%20folder.zip"
+unzip -o "Copy Contents into valve folder.zip"
 mv 'Copy Contents into valve folder' 'dependencies' 2>/dev/null
+rm -f "Copy Contents into valve folder.zip"
 
 ### Create the start script
 cat <<EOF >${INSTALLPATH}/"Half Life.sh"
-export LD_LIBRARY_PATH=${INSTALLPATH}/${PORTNAME}:/usr/lib
+export LD_LIBRARY_PATH=${INSTALLPATH}/${PKG_NAME}:/usr/lib
 
-cd ${INSTALLPATH}/${PORTNAME}
+cd ${INSTALLPATH}/${PKG_NAME}
 
 if [ ! -d "valve" ]
 then
   mkdir "valve"
-  echo "Unable to find game data.  Please copy to ${INSTALLPATH}/${PORTNAME}/valve" >>/tmp/logs/emuelec.log
+  echo "Unable to find game data.  Please copy to ${INSTALLPATH}/${PKG_NAME}/valve" >>/tmp/logs/emuelec.log
   exit 1
 else
   rsync -av dependencies/* valve
@@ -50,7 +52,7 @@ fi
 
 
 ret_error=\$?
-[[ "\$ret_error" != 0 ]] && (echo "Error executing Half Life.  Please check that you have copied your game data to ${INSTALLPATH}/${PORTNAME}/valve." >/tmp/logs/emuelec.log)
+[[ "\$ret_error" != 0 ]] && (echo "Error executing Half Life.  Please check that you have copied your game data to ${INSTALLPATH}/${PKG_NAME}/valve." >/tmp/logs/emuelec.log)
 EOF
 
 ### Add Half Life images
@@ -61,7 +63,7 @@ fi
 
 for image in system-half-life.png  system-half-life-thumb.png
 do
-  cp "${SOURCEPATH}/${PORTNAME}/${image}" "${INSTALLPATH}/images"
+  cp "${SOURCEPATH}/${PKG_NAME}/${image}" "${INSTALLPATH}/images"
 done
 
 ### Add Half Life to the game list
