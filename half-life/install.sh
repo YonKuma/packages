@@ -18,7 +18,7 @@ fi
 cd ${INSTALLPATH}/${PKG_NAME}
 
 curl -Lo ${PKG_FILE} https://github.com/krishenriksen/Half-Life-rg351p/releases/download/${PKG_VERSION}/${PKG_FILE}
-BINSUM=$(sha256sum ${bin} | awk '{print $1}')
+BINSUM=$(sha256sum ${PKG_FILE} | awk '{print $1}')
 if [ ! "${PKG_SHASUM}" == "${BINSUM}" ]
 then
   echo "Checksum mismatch, please update the package."
