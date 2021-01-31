@@ -2,23 +2,15 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 # Copyright (C) 2019-present Shanti Gilbert (https://github.com/shantigilbert)
 # Copyright (C) 2020-present Fewtarius
+# Copyright (C) 2020-present Cebion
 
 # Load functions needed to send messages to the console
 . /etc/profile
 
-# First test if we're a 32bit or 64bit userland.
 unset MYARCH
-TEST=$(ldd /usr/bin/emulationstation | grep 64)
-if [ $? == 0 ]
-then
-  MYARCH="aarch64"
-  LINK="https://github.com/Retro-Arena/binaries/raw/master/odroid-n2/drastic.tar.gz"
-  SHASUM="aad1a62a557fc18c64ddde2a319cde51e6dd6e9f710ed1d258f14e0f3cd30883"
-else
-  MYARCH="arm"
-  LINK="https://github.com/Retro-Arena/binaries/raw/master/odroid-xu4/drastic.tar.gz"
-  SHASUM="e36501311c9f36c97d52ad3e8315ddbdfe02397a319140270695c3f10e02368c"
-fi
+MYARCH="aarch64"
+LINK="https://github.com/Cebion/packages/raw/main/misc/drastic.tar.gz"
+SHASUM="561fd70cf5c45c55892b9bdef4c376b0c7a1572e7bfa49c32adcc39eeb225a4e"
 
 INSTALL_PATH="/storage/drastic"
 BINARY="drastic"
@@ -28,7 +20,7 @@ START_SCRIPT="$BINARY.sh"
 
 mkdir -p "${INSTALL_PATH}/${MYARCH}/"
 
-wget -O $LINKDEST $LINK
+curl -Lo $LINKDEST $LINK
 CHECKSUM=$(sha256sum $LINKDEST | awk '{print $1}')
 if [ ! "${SHASUM}" == "${CHECKSUM}" ]
 then
@@ -61,21 +53,14 @@ fi
 
 read -d '' content <<EOF
 #!/bin/sh
-
+source /etc/profile
 BINPATH="/usr/bin"
 EMUELECLOG="/tmp/logs/emuelec.log"
 
 cd ${INSTALL_PATH}/${MYARCH}/drastic/
-TEST=\$(ldd /usr/bin/emulationstation | grep 64)
-if [ \$? == 0 ]
-then
-  MYARCH="aarch64"
-  LD_LIBRARY_CONFIG="/usr/lib32"
-else
-  MYARCH="arm"
-fi
+maxperf
 ./drastic "\$1" >> \$EMUELECLOG 2>&1
-
+normperf
 EOF
 echo "$content" > ${INSTALL_PATH}/${START_SCRIPT}
 chmod +x ${INSTALL_PATH}/${START_SCRIPT}

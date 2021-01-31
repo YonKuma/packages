@@ -12,15 +12,7 @@ BINARY="drastic"
 CFG="/storage/.emulationstation/es_systems.cfg"
 START_SCRIPT="$BINARY.sh"
 
-# First test if we're a 32bit or 64bit userland.
-unset MYARCH
-TEST=$(ldd /usr/bin/emulationstation | grep 64)
-if [ $? == 0 ]
-then
-  MYARCH="aarch64"
-else
-  MYARCH="arm"
-fi
+MYARCH="aarch64"
 
 if grep -q '<name>nds</name>' "$CFG"
 then
