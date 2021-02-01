@@ -46,28 +46,28 @@ fi
 		-s '//systemList/system[last()]' -t elem -n 'release' -v '2005'\
 		-s '//systemList/system[last()]' -t elem -n 'hardware' -v 'portable'\
 		-s '//systemList/system[last()]' -t elem -n 'extension' -v '.nds .zip .NDS .ZIP'\
-		-s '//systemList/system[last()]' -t elem -n 'command' -v "/emuelec/scripts/$START_SCRIPT %ROM%"\
+		-s '//systemList/system[last()]' -t elem -n 'command' -v "/storage/drastic/$START_SCRIPT %ROM%"\
 		-s '//systemList/system[last()]' -t elem -n 'platform' -v 'nds'\
 		-s '//systemList/system[last()]' -t elem -n 'theme' -v 'nds'\
 		$CFG
 
 read -d '' content <<EOF
-#!/bin/sh
+#!/bin/bash
+
 source /etc/profile
+
 BINPATH="/usr/bin"
-EMUELECLOG="/tmp/logs/emuelec.log"
+EXECLOG="/tmp/logs/exec.log"
 
 cd ${INSTALL_PATH}/${MYARCH}/drastic/
 maxperf
-./drastic "\$1" >> \$EMUELECLOG 2>&1
+./drastic "\$1" >> \$EXECLOG 2>&1
 normperf
 EOF
 echo "$content" > ${INSTALL_PATH}/${START_SCRIPT}
 chmod +x ${INSTALL_PATH}/${START_SCRIPT}
-if [ -f /storage/.config/emulationstation/scripts/drastic.sh ]
+if [ ! -d "${INSTALL_PATH}/${MYARCH}/drastic/config" ]
 then
-  rm -f /storage/.config/emulationstation/scripts/drastic.sh
+  mkdir ${INSTALL_PATH}/${MYARCH}/drastic/config
 fi
-mkdir ${INSTALL_PATH}/${MYARCH}/drastic/config
 cp drastic/drastic.cfg ${INSTALL_PATH}/${MYARCH}/drastic/config 2>/dev/null ||:
-ln -sf ${INSTALL_PATH}/${START_SCRIPT} /storage/.config/emuelec/scripts/drastic.sh
