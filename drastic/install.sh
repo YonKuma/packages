@@ -76,5 +76,10 @@ cp drastic/drastic.cfg ${INSTALL_PATH}/${MYARCH}/drastic/config 2>/dev/null ||:
 if [ -f "/storage/.config/emuelec/scripts/drastic.sh" ]
 then
   rm -f "/storage/.config/emuelec/scripts/drastic.sh"
+fi
+
+### Only link on 1.0 as 2.0 paths are different.
+if [ -d "/storage/.config/emuelec/scripts" ]
+then
   ln -sf ${INSTALL_PATH}/${START_SCRIPT} /storage/.config/emuelec/scripts/drastic.sh
 fi
