@@ -19,8 +19,9 @@ then
   exit 1
 fi
 
+mkdir -p ${INSTALLPATH}/${PKG_NAME}
 unzip -o "${PKG_FILE}"
-mv tyrian21/* .
+mv tyrian21/* ${INSTALLPATH}/${PKG_NAME}
 rmdir tyrian21
 rm -f "${PKG_FILE}"
 
